@@ -2,9 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 
+// 💡 깐깐한 심사관을 위한 완벽한 신분증(Type) 발급!
+type Task = { id: number; text: string; completed: boolean };
+type TasksState = { [key: string]: Task[] };
+type InputsState = { [key: string]: string };
+
 const QuadrantApp = () => {
-  const [tasks, setTasks] = useState({ q1: [], q2: [], q3: [], q4: [] });
-  const [inputs, setInputs] = useState({ q1: '', q2: '', q3: '', q4: '' });
+  const [tasks, setTasks] = useState<TasksState>({ q1: [], q2: [], q3: [], q4: [] });
+  const [inputs, setInputs] = useState<InputsState>({ q1: '', q2: '', q3: '', q4: '' });
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -17,7 +22,8 @@ const QuadrantApp = () => {
     if (mounted) localStorage.setItem('my-quadrant-tasks', JSON.stringify(tasks));
   }, [tasks, mounted]);
 
-  const addTask = (q) => {
+  // 💡 여기! q가 문자(string)라고 명확히 알려줍니다.
+  const addTask = (q: string) => {
     if (!inputs[q].trim()) return;
     setTasks({ 
       ...tasks, 
@@ -26,11 +32,11 @@ const QuadrantApp = () => {
     setInputs({ ...inputs, [q]: '' });
   };
 
-  const deleteTask = (q, id) => {
+  const deleteTask = (q: string, id: number) => {
     setTasks({ ...tasks, [q]: tasks[q].filter(task => task.id !== id) });
   };
 
-  const toggleTask = (q, id) => {
+  const toggleTask = (q: string, id: number) => {
     setTasks({
       ...tasks,
       [q]: tasks[q].map(task => 
@@ -74,7 +80,6 @@ const QuadrantApp = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-2 sm:p-4 font-sans text-gray-900">
-      {/* 💡 핵심: grid-rows-2 를 추가해서 위아래 크기를 무조건 5:5로 고정했습니다! */}
       <div className="max-w-6xl mx-auto grid grid-cols-2 grid-rows-2 gap-2 sm:gap-4 h-[calc(100vh-20px)] sm:h-[calc(100vh-40px)] min-h-[400px]">
         {quadrants.map((q) => (
           <div key={q.id} className={`${q.color} border-2 ${q.border} rounded-xl sm:rounded-2xl p-3 sm:p-5 flex flex-col shadow-sm overflow-hidden`}>
@@ -84,8 +89,8 @@ const QuadrantApp = () => {
               <input
                 type="text"
                 value={inputs[q.id]}
-                onChange={(e) => setInputs({ ...inputs, [q.id]: e.target.value })}
-                onKeyPress={(e) => e.key === 'Enter' && addTask(q.id)}
+                onChange={(e: any) => setInputs({ ...inputs, [q.id]: e.target.value })}
+                onKeyPress={(e: any) => e.key === 'Enter' && addTask(q.id)}
                 placeholder="Add"
                 className="flex-1 bg-white/80 border-none rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 shadow-inner outline-none text-[11px] sm:text-xs focus:ring-2 focus:ring-black/5 min-w-0"
               />
