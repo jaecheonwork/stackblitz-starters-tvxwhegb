@@ -17,7 +17,8 @@ export default function QuadrantApp() {
     if (mounted) localStorage.setItem('my-quadrant-tasks', JSON.stringify(tasks));
   }, [tasks, mounted]);
 
-  const addTask = (q: string) => {
+  // 💡 여기서 q: any 라고 신분증을 확실히 달아줬습니다!
+  const addTask = (q: any) => {
     if (!inputs[q].trim()) return;
     setTasks({ 
       ...tasks, 
@@ -26,11 +27,11 @@ export default function QuadrantApp() {
     setInputs({ ...inputs, [q]: '' });
   };
 
-  const deleteTask = (q: string, id: number) => {
+  const deleteTask = (q: any, id: any) => {
     setTasks({ ...tasks, [q]: tasks[q].filter((t: any) => t.id !== id) });
   };
 
-  const toggleTask = (q: string, id: number) => {
+  const toggleTask = (q: any, id: any) => {
     setTasks({
       ...tasks,
       [q]: tasks[q].map((t: any) => t.id === id ? { ...t, completed: !t.completed } : t)
@@ -56,14 +57,14 @@ export default function QuadrantApp() {
               <input
                 type="text"
                 value={inputs[q.id]}
-                onChange={(e) => setInputs({ ...inputs, [q.id]: e.target.value })}
-                onKeyPress={(e) => e.key === 'Enter' && addTask(q.id)}
+                onChange={(e: any) => setInputs({ ...inputs, [q.id]: e.target.value })}
+                onKeyPress={(e: any) => e.key === 'Enter' && addTask(q.id)}
                 placeholder="Add"
                 className="flex-1 bg-white/80 border-none rounded-lg px-2 py-1.5 shadow-inner outline-none text-[11px] sm:text-xs min-w-0"
               />
-              <button onClick={() => addTask(q.id)} className="bg-white p-1.5 rounded-lg shadow-sm text-gray-700">+</button>
+              <button onClick={() => addTask(q.id)} className="bg-white p-1.5 rounded-lg shadow-sm text-gray-700 font-bold">+</button>
             </div>
-            <div className="flex-1 overflow-y-auto space-y-2 pr-1">
+            <div className="flex-1 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
               {tasks[q.id].map((task: any) => (
                 <div key={task.id} className={`bg-white/90 p-2 rounded-lg flex justify-between items-center shadow-sm ${task.completed ? 'opacity-50' : ''}`}>
                   <div className="flex items-center gap-2 flex-1 cursor-pointer" onClick={() => toggleTask(q.id, task.id)}>
